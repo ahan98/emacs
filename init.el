@@ -1,17 +1,8 @@
-(let ((default-directory  "~/.config/emacs/modules"))
-  (normal-top-level-add-subdirs-to-load-path))
-;; (add-to-list 'load-path "~/.config/emacs/modules")
+;; (let ((default-directory  "~/.config/emacs/modules"))
+;;   (normal-top-level-add-subdirs-to-load-path))
+(add-to-list 'load-path "~/.config/emacs/lisp")
+(add-to-list 'custom-theme-load-path "~/.config/emacs/themes")
 
-(blink-cursor-mode -1)
-(setq ring-bell-function 'ignore)
-(defun display-startup-echo-area-message () (message nil))
-;; (setq inhibit-startup-message t)
-;; (setq initial-scratch-message nil)
-;; ;; (setq inhibit-startup-echo-area-message t)
-;; (tool-bar-mode -1)
-;; (menu-bar-mode -1)
-
-(setq package-enable-at-startup nil)
 
 (defvar bootstrap-version)
 (let ((bootstrap-file
@@ -26,16 +17,15 @@
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
 
+(setq package-enable-at-startup nil)
+
 (straight-use-package 'use-package)
 (eval-when-compile (require 'use-package))
 
 (use-package autothemer
   :straight t
-  :ensure t)
-
-(straight-use-package
-  '(rose-pine-emacs :type git :host github :repo "thongpv87/rose-pine-emacs" :branch "master"))
-(load-theme 'rose-pine-moon t)
+  :ensure t
+  :init (load-theme 'rose-pine-moon t))
 
 ;; (straight-use-package
 ;;   '(catppuccin :type git :host github :repo "catppuccin/emacs"))
@@ -43,28 +33,33 @@
 ;; (setq catppuccin-flavor 'macchiato) ;; 'frappe, 'latte, 'macchiato, or 'mocha
 ;; (catppuccin-reload)
 
-;; (straight-use-package
-;;   '(emacs-splash :type git :host github :repo "rougier/emacs-splash"))
-;; (require 'splash-screen)
-
-;; (straight-use-package
-;;   '(nano-emacs :type git :host github :repo "rougier/nano-emacs"))
-(require 'nano-defaults)
 (require 'nano-layout)
-(require 'nano-modeline)
 
-(setq nano-font-family-monospaced "Iosevka Nerd Font")
-(setq nano-font-family-proportional "ETBookOT")
-(setq nano-font-size 15)
-
-;; refresh theme AFTER setting font and theme
-(require 'nano-faces)
-(require 'nano-theme)
-(nano-refresh-theme)
+;; https://sqrtminusone.xyz/configs/emacs/
+(when (display-graphic-p)
+  (set-frame-font "PragmataPro Mono Liga 15" nil t)
+  (set-face-attribute 'variable-pitch nil :family "ETBookOT" :height 1.0))
 
 ;; change font size, interactively
 (global-set-key (kbd "C-=") 'text-scale-increase)
 (global-set-key (kbd "C--") 'text-scale-decrease)
+
+(use-package evil-anzu
+  :straight t
+  :ensure t
+  :config (global-anzu-mode +1))
+
+(use-package doom-modeline
+  :straight t
+  :ensure t
+  :config
+  (doom-modeline-mode 1))
+
+(use-package hide-mode-line
+  :straight t
+  :ensure t
+  :config
+  (add-hook 'completion-list-mode-hook #'hide-mode-line-mode))
 
 (use-package general
   :straight t
@@ -105,7 +100,8 @@
     "wh" 'evil-window-left
     "wj" 'evil-window-down
     "wk" 'evil-window-up
-    "wl" 'evil-window-right)
+    "wl" 'evil-window-right
+    "bd" 'kill-this-buffer)
   :init
   ;; (setq-default evil-shift-width 2)
   (setq evil-undo-system 'undo-redo)
@@ -150,9 +146,12 @@
   :straight t
   :ensure t
   :general
-    (lc/leader-keys
+  (lc/leader-keys
     "c" 'evilnc-comment-operator
-    "C" 'evilnc-copy-and-comment-operator))
+    "C" 'evilnc-copy-and-comment-operator)
+  (general-nmap
+    "<tab>" 'evil-next-buffer
+    "<backtab>" 'evil-next-buffer))
 
 ;; (straight-use-package 'evil-collection)
 ;; (use-package evil-collection
@@ -162,3 +161,20 @@
 ;;   (setq evil-collection-magit-use-z-for-folds nil)
 ;;   :config
 ;;   (evil-collection-init))
+
+;; (use-package doom-themes
+;;   :straight t
+;;   :ensure t
+;;   :config
+;;   ;; Global settings (defaults)
+;;   (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+;;         doom-themes-enable-italic t) ; if nil, italics is universally disabled
+;;   ;; (load-theme 'doom-one t)
+;;   ;; Enable flashing mode-line on errors
+;;   (doom-themes-visual-bell-config)
+;;   ;; or for treemacs users
+;;   ;; (setq doom-themes-treemacs-theme "doom-atom") ; use "doom-colors" for less minimal icon theme
+;;   ;; (doom-themes-treemacs-config)
+;;   ;; Corrects (and improves) org-mode's native fontification.
+;;   (doom-themes-org-config))
+

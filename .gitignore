@@ -116,6 +116,7 @@ tags
 
 # End of https://www.toptal.com/developers/gitignore/api/emacs,macos,vim,fish,homebrew
 
+# ignore emacs packages, since init.el will install them
 elpa/
 eln-cache/
 auto-save-list/

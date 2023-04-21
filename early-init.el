@@ -1,1 +1,15 @@
 (add-to-list 'default-frame-alist '(undecorated-round . t))
+
+;; defaults
+(setq ring-bell-function 'ignore)
+(setq inhibit-startup-echo-area-message t)
+(defun display-startup-echo-area-message () (message nil))
+(setq column-number-mode t)
+(setq line-number-mode t)
+;; (setq isearch-lazy-count t)
+(setq inhibit-startup-message t)
+(setq initial-scratch-message nil)
+(blink-cursor-mode -1)
+(tool-bar-mode -1)
+(menu-bar-mode -1)
+(scroll-bar-mode -1)
