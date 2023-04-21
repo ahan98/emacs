@@ -27,12 +27,14 @@
   :straight t
   :config
   (setq doom-themes-enable-bold t
-	doom-themes-enable-italic t)
-  (load-theme 'doom-gruvbox t)
+        doom-themes-enable-italic t)
   (doom-themes-visual-bell-config)
   (setq doom-themes-treemacs-theme "doom-colors")
   ;; (doom-themes-treemacs-config)
 )
+
+;; (load-theme 'doom-gruvbox t)
+(load-theme 'doom-rose-pine-moon t)
 
 (use-package all-the-icons
   :straight t
@@ -200,6 +202,10 @@
   (general-nmap
     "<tab>" 'evil-next-buffer
     "<backtab>" 'evil-next-buffer))
+
+(setq evil-normal-state-cursor '(box "#c4a7e7")
+      evil-insert-state-cursor '(bar "#c4a7e7")
+      evil-visual-state-cursor '(hollow "#c4a7e7"))
 
 ;; (straight-use-package 'evil-collection)
 ;; (use-package evil-collection
