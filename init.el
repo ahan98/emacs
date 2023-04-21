@@ -3,7 +3,6 @@
 (add-to-list 'load-path "~/.config/emacs/lisp")
 (add-to-list 'custom-theme-load-path "~/.config/emacs/themes")
 
-
 (defvar bootstrap-version)
 (let ((bootstrap-file
        (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
@@ -22,10 +21,27 @@
 (straight-use-package 'use-package)
 (eval-when-compile (require 'use-package))
 
-(use-package autothemer
+(require 'nano-layout)
+
+(use-package doom-themes
   :straight t
-  :ensure t
-  :init (load-theme 'rose-pine-moon t))
+  :config
+  (setq doom-themes-enable-bold t
+	doom-themes-enable-italic t)
+  (load-theme 'doom-gruvbox t)
+  (doom-themes-visual-bell-config)
+  (setq doom-themes-treemacs-theme "doom-colors")
+  ;; (doom-themes-treemacs-config)
+)
+
+(use-package all-the-icons
+  :straight t
+  :if (display-graphic-p))
+
+;; (use-package autothemer
+;;   :straight t
+;;   :ensure t)
+;; (load-theme 'rose-pine-moon t)
 
 ;; (straight-use-package
 ;;   '(catppuccin :type git :host github :repo "catppuccin/emacs"))
@@ -33,21 +49,27 @@
 ;; (setq catppuccin-flavor 'macchiato) ;; 'frappe, 'latte, 'macchiato, or 'mocha
 ;; (catppuccin-reload)
 
-(require 'nano-layout)
+(global-hl-line-mode 1)
 
 ;; https://sqrtminusone.xyz/configs/emacs/
 (when (display-graphic-p)
   (set-frame-font "PragmataPro Mono Liga 15" nil t)
   (set-face-attribute 'variable-pitch nil :family "ETBookOT" :height 1.0))
 
-;; change font size, interactively
+(global-display-line-numbers-mode 1)
+(line-number-mode nil)
+(setq display-line-numbers-type 'visual)
+(column-number-mode)
+
+;; https://emacs.stackexchange.com/a/55166
+(defun display-line-numbers-equalize ()
+  "Equalize The width"
+  (setq display-line-numbers-width (length (number-to-string (line-number-at-pos (point-max))))))
+(add-hook 'find-file-hook 'display-line-numbers-equalize)
+
+;; change font size interactively
 (global-set-key (kbd "C-=") 'text-scale-increase)
 (global-set-key (kbd "C--") 'text-scale-decrease)
-
-(use-package evil-anzu
-  :straight t
-  :ensure t
-  :config (global-anzu-mode +1))
 
 (use-package doom-modeline
   :straight t
@@ -60,6 +82,18 @@
   :ensure t
   :config
   (add-hook 'completion-list-mode-hook #'hide-mode-line-mode))
+
+(set-face-attribute 'doom-modeline-panel nil)
+
+;; (use-package mood-line
+;;   :straight t
+;;   :ensure t
+;;   ;; ;; Use pretty Fira Code-compatible glyphs
+;;   ;; :custom
+;;   ;; (mood-line-glyph-alist . mood-line-glyphs-fira-code))
+;;   ;; Enable mood-line
+;;   :config
+;;   (mood-line-mode))
 
 (use-package general
   :straight t
@@ -89,6 +123,14 @@
   ;;   "SPC" '(execute-extended-command :which-key "execute command"))
 )
 
+(use-package beacon
+  :straight t
+  :ensure t
+  :custom
+  (beacon-blink-when-point-moves-vertically 10)
+  :init
+  (beacon-mode 1))
+
 (use-package evil
   :straight t
   :demand t
@@ -102,23 +144,24 @@
     "wk" 'evil-window-up
     "wl" 'evil-window-right
     "bd" 'kill-this-buffer)
-  :init
-  ;; (setq-default evil-shift-width 2)
-  (setq evil-undo-system 'undo-redo)
-  (setq evil-split-window-below t)
-  (setq evil-vsplit-window-right t)
-  (setq evil-want-C-u-scroll t)
-  (setq evil-want-Y-yank-to-eol t)
-  (setq evil-search-module 'evil-search)  ;; enables gn
-  (setq evil-want-keybinding nil)
+  :custom
+  (evil-undo-system 'undo-redo)
+  (evil-split-window-below t)
+  (evil-vsplit-window-right t)
+  (evil-want-C-u-scroll t)
+  (evil-want-Y-yank-to-eol t)
+  (evil-search-module 'evil-search)  ;; enables gn
+  (evil-want-keybinding nil)
+  (evil-want-integration t)
   ;; move to window when splitting
-  (setq-local evil-scroll-count 0)
-  ;; (setq evil-want-integration t)
+  ;; (setq-local evil-scroll-count 0)
   ;; (setq evil-want-C-i-jump t)
-  ;; (setq evil-respect-visual-line-mode t)
+  (setq evil-respect-visual-line-mode t)
   ;; (setq evil-auto-indent nil)
   :config
   (evil-mode 1)
+  (setq-default evil-shift-width 2)
+  (setq evil-ex-search-persistent-highlight t)
   ;; (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
   ;; (define-key evil-motion-state-map "_" 'evil-end-of-line)
   ;; (define-key evil-motion-state-map "0" 'evil-beginning-of-line)
@@ -126,9 +169,14 @@
   ;; (evil-set-initial-state 'dashboard-mode 'normal)
   ;; ;; don't move cursor after ==
   ;; (defun lc/evil-dont-move-cursor (orig-fn &rest args)
-  ;;   (save-excursion (apply orig-fn args)))
+  ;; (save-excursion (apply orig-fn args))
   ;; (advice-add 'evil-indent :around #'lc/evil-dont-move-cursor)
 )
+
+(use-package evil-anzu
+  :straight t
+  :ensure t
+  :config (global-anzu-mode +1))
 
 (use-package evil-goggles
   :straight t
@@ -161,20 +209,3 @@
 ;;   (setq evil-collection-magit-use-z-for-folds nil)
 ;;   :config
 ;;   (evil-collection-init))
-
-;; (use-package doom-themes
-;;   :straight t
-;;   :ensure t
-;;   :config
-;;   ;; Global settings (defaults)
-;;   (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
-;;         doom-themes-enable-italic t) ; if nil, italics is universally disabled
-;;   ;; (load-theme 'doom-one t)
-;;   ;; Enable flashing mode-line on errors
-;;   (doom-themes-visual-bell-config)
-;;   ;; or for treemacs users
-;;   ;; (setq doom-themes-treemacs-theme "doom-atom") ; use "doom-colors" for less minimal icon theme
-;;   ;; (doom-themes-treemacs-config)
-;;   ;; Corrects (and improves) org-mode's native fontification.
-;;   (doom-themes-org-config))
-
