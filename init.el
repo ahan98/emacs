@@ -1,11 +1,15 @@
-;; Paths
+;-------
+; Paths
+;-------
 
 (add-to-list 'load-path "~/.config/emacs/lisp")
 (add-to-list 'custom-theme-load-path "~/.config/emacs/themes")
 ;; (let ((default-directory  "~/.config/emacs/modules"))
 ;;   (normal-top-level-add-subdirs-to-load-path))
 
-;; Package Management
+;--------------------
+; Package Management
+;--------------------
 
 (defvar bootstrap-version)
 (let ((bootstrap-file
@@ -25,7 +29,9 @@
 (straight-use-package 'use-package)
 (eval-when-compile (require 'use-package))
 
-;; Themes
+;--------
+; Themes
+;--------
 
 ;; Load this first, otherwise Emacs will briefly show vanilla background
 (use-package doom-themes
@@ -46,13 +52,15 @@
 ;; (setq catppuccin-flavor 'macchiato) ;; 'frappe, 'latte, 'macchiato, or 'mocha
 ;; (catppuccin-reload)
 
+;----------
+; Defaults
+;----------
+
 ;; (require 'nano-defaults)
 
-;; defaults
 (setq ring-bell-function 'ignore)
 (setq inhibit-startup-echo-area-message t)
 (defun display-startup-echo-area-message () (message nil))
-;; (setq isearch-lazy-count t)
 (setq inhibit-startup-message t)
 (setq initial-scratch-message nil)
 (blink-cursor-mode -1)
@@ -60,7 +68,7 @@
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
 
-;; https://github.com/rougier/nano-emacs/blob/master/nano-layout.el
+;; (require 'nano-layout)
 (setq default-frame-alist
       (append (list '(min-height . 1)
                     '(height     . 45)
@@ -79,7 +87,20 @@
 ;; (setq widget-image-enable nil)
 ;; (setq org-hide-emphasis-markers t)
 
-;; Fonts
+;; Lines
+(global-display-line-numbers-mode 1)
+(setq display-line-numbers-type 'relative)
+(setq display-line-numbers-width-start 1)
+
+;; ;; https://emacs.stackexchange.com/a/55166
+;; (defun display-line-numbers-equalize ()
+;;   "Equalize The width"
+;;   (setq display-line-numbers-width (length (number-to-string (line-number-at-pos (point-max))))))
+;; (add-hook 'find-file-hook 'display-line-numbers-equalize)
+
+;-------
+; Fonts
+;-------
 
 (when (display-graphic-p)
   (set-frame-font "PragmataPro Mono Liga 15" nil t)
@@ -89,21 +110,9 @@
 (global-set-key (kbd "C-=") 'text-scale-increase)
 (global-set-key (kbd "C--") 'text-scale-decrease)
 
-;; Line Numbers
-
-(global-hl-line-mode 1)
-(global-display-line-numbers-mode 1)
-(setq display-line-numbers-type 'visual)
-(line-number-mode nil)
-(column-number-mode)
-
-;; https://emacs.stackexchange.com/a/55166
-(defun display-line-numbers-equalize ()
-  "Equalize The width"
-  (setq display-line-numbers-width (length (number-to-string (line-number-at-pos (point-max))))))
-(add-hook 'find-file-hook 'display-line-numbers-equalize)
-
-;; Modeline
+;----------
+; Modeline
+;----------
 
 (use-package doom-modeline
   :straight t
@@ -121,7 +130,9 @@
 ;;   :straight t
 ;;   :if (display-graphic-p))
 
-;; Keybindings
+;-------------
+; Keybindings
+;-------------
 
 ;; https://www.lucacambiaghi.com/vanilla-emacs/readme.html
 (use-package general
@@ -183,6 +194,7 @@
   (evil-mode 1)
   (setq-default evil-shift-width 2)
   (setq evil-ex-search-persistent-highlight t)
+  ;; (define-key evil-ex-map "e" 'find-file)
   ;; (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
   ;; (define-key evil-motion-state-map "_" 'evil-end-of-line)
   ;; (define-key evil-motion-state-map "0" 'evil-beginning-of-line)
@@ -235,7 +247,9 @@
 ;;   :config
 ;;   (evil-collection-init))
 
-;; Other
+; ------------
+; Visual Aids
+; ------------
 
 (use-package beacon
   :straight t
@@ -244,3 +258,5 @@
   (beacon-blink-when-point-moves-vertically 10)
   :init
   (beacon-mode 1))
+
+(global-hl-line-mode 1)
