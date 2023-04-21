@@ -27,7 +27,7 @@
 
 ;; Themes
 
-;; Put near top of init.el, otherwise Emacs will briefly show vanilla background
+;; Load this first, otherwise Emacs will briefly show vanilla background
 (use-package doom-themes
   :straight t
   :config
@@ -46,10 +46,40 @@
 ;; (setq catppuccin-flavor 'macchiato) ;; 'frappe, 'latte, 'macchiato, or 'mocha
 ;; (catppuccin-reload)
 
-;; Defaults
+;; (require 'nano-defaults)
 
-(require 'nano-defaults)
-(require 'nano-layout)
+;; defaults
+(setq ring-bell-function 'ignore)
+(setq inhibit-startup-echo-area-message t)
+(defun display-startup-echo-area-message () (message nil))
+;; (setq isearch-lazy-count t)
+(setq inhibit-startup-message t)
+(setq initial-scratch-message nil)
+(blink-cursor-mode -1)
+(tool-bar-mode -1)
+(menu-bar-mode -1)
+(scroll-bar-mode -1)
+
+;; https://github.com/rougier/nano-emacs/blob/master/nano-layout.el
+(setq default-frame-alist
+      (append (list '(min-height . 1)
+                    '(height     . 45)
+                    '(min-width  . 1)
+                    '(width      . 81)
+                    '(vertical-scroll-bars . nil)
+                    '(internal-border-width . 24)
+                    '(left-fringe    . 1)
+                    '(right-fringe   . 1)
+                    '(tool-bar-lines . 0)
+                    '(menu-bar-lines . 0))))
+
+(setq window-divider-default-right-width 24)
+(setq window-divider-default-places 'right-only)
+(window-divider-mode 1)
+;; (setq widget-image-enable nil)
+;; (setq org-hide-emphasis-markers t)
+
+;; Fonts
 
 (when (display-graphic-p)
   (set-frame-font "PragmataPro Mono Liga 15" nil t)
@@ -58,6 +88,8 @@
 ;; change font size interactively
 (global-set-key (kbd "C-=") 'text-scale-increase)
 (global-set-key (kbd "C--") 'text-scale-decrease)
+
+;; Line Numbers
 
 (global-hl-line-mode 1)
 (global-display-line-numbers-mode 1)
@@ -85,9 +117,9 @@
   :config
   (add-hook 'completion-list-mode-hook #'hide-mode-line-mode))
 
-(use-package all-the-icons
-  :straight t
-  :if (display-graphic-p))
+;; (use-package all-the-icons
+;;   :straight t
+;;   :if (display-graphic-p))
 
 ;; Keybindings
 
@@ -188,7 +220,7 @@
     "C" 'evilnc-copy-and-comment-operator)
   (general-nmap
     "<tab>" 'evil-next-buffer
-    "<backtab>" 'evil-next-buffer))
+    "<backtab>" 'evil-prev-buffer))
 
 ;; (setq evil-normal-state-cursor '(box "#c4a7e7")
 ;;       evil-insert-state-cursor '(bar "#c4a7e7")
