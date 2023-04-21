@@ -1,7 +1,11 @@
-;; (let ((default-directory  "~/.config/emacs/modules"))
-;;   (normal-top-level-add-subdirs-to-load-path))
+;; Paths
+
 (add-to-list 'load-path "~/.config/emacs/lisp")
 (add-to-list 'custom-theme-load-path "~/.config/emacs/themes")
+;; (let ((default-directory  "~/.config/emacs/modules"))
+;;   (normal-top-level-add-subdirs-to-load-path))
+
+;; Package Management
 
 (defvar bootstrap-version)
 (let ((bootstrap-file
@@ -21,29 +25,20 @@
 (straight-use-package 'use-package)
 (eval-when-compile (require 'use-package))
 
-(require 'nano-layout)
+;; Themes
 
+;; Put near top of init.el, otherwise Emacs will briefly show vanilla background
 (use-package doom-themes
   :straight t
   :config
+  (load-theme 'doom-rose-pine-moon t)
+  ;; (load-theme 'doom-gruvbox t)
   (setq doom-themes-enable-bold t
-        doom-themes-enable-italic t)
+        doom-themes-enable-italic t
+        doom-themes-treemacs-theme "doom-colors")
   (doom-themes-visual-bell-config)
-  (setq doom-themes-treemacs-theme "doom-colors")
   ;; (doom-themes-treemacs-config)
 )
-
-;; (load-theme 'doom-gruvbox t)
-(load-theme 'doom-rose-pine-moon t)
-
-(use-package all-the-icons
-  :straight t
-  :if (display-graphic-p))
-
-;; (use-package autothemer
-;;   :straight t
-;;   :ensure t)
-;; (load-theme 'rose-pine-moon t)
 
 ;; (straight-use-package
 ;;   '(catppuccin :type git :host github :repo "catppuccin/emacs"))
@@ -51,16 +46,23 @@
 ;; (setq catppuccin-flavor 'macchiato) ;; 'frappe, 'latte, 'macchiato, or 'mocha
 ;; (catppuccin-reload)
 
-(global-hl-line-mode 1)
+;; Defaults
 
-;; https://sqrtminusone.xyz/configs/emacs/
+(require 'nano-defaults)
+(require 'nano-layout)
+
 (when (display-graphic-p)
   (set-frame-font "PragmataPro Mono Liga 15" nil t)
   (set-face-attribute 'variable-pitch nil :family "ETBookOT" :height 1.0))
 
+;; change font size interactively
+(global-set-key (kbd "C-=") 'text-scale-increase)
+(global-set-key (kbd "C--") 'text-scale-decrease)
+
+(global-hl-line-mode 1)
 (global-display-line-numbers-mode 1)
-(line-number-mode nil)
 (setq display-line-numbers-type 'visual)
+(line-number-mode nil)
 (column-number-mode)
 
 ;; https://emacs.stackexchange.com/a/55166
@@ -69,9 +71,7 @@
   (setq display-line-numbers-width (length (number-to-string (line-number-at-pos (point-max))))))
 (add-hook 'find-file-hook 'display-line-numbers-equalize)
 
-;; change font size interactively
-(global-set-key (kbd "C-=") 'text-scale-increase)
-(global-set-key (kbd "C--") 'text-scale-decrease)
+;; Modeline
 
 (use-package doom-modeline
   :straight t
@@ -85,18 +85,13 @@
   :config
   (add-hook 'completion-list-mode-hook #'hide-mode-line-mode))
 
-(set-face-attribute 'doom-modeline-panel nil)
+(use-package all-the-icons
+  :straight t
+  :if (display-graphic-p))
 
-;; (use-package mood-line
-;;   :straight t
-;;   :ensure t
-;;   ;; ;; Use pretty Fira Code-compatible glyphs
-;;   ;; :custom
-;;   ;; (mood-line-glyph-alist . mood-line-glyphs-fira-code))
-;;   ;; Enable mood-line
-;;   :config
-;;   (mood-line-mode))
+;; Keybindings
 
+;; https://www.lucacambiaghi.com/vanilla-emacs/readme.html
 (use-package general
   :straight t
   :demand t
@@ -124,14 +119,6 @@
   ;;   "<escape>" 'keyboard-escape-quit)
   ;;   "SPC" '(execute-extended-command :which-key "execute command"))
 )
-
-(use-package beacon
-  :straight t
-  :ensure t
-  :custom
-  (beacon-blink-when-point-moves-vertically 10)
-  :init
-  (beacon-mode 1))
 
 (use-package evil
   :straight t
@@ -203,9 +190,9 @@
     "<tab>" 'evil-next-buffer
     "<backtab>" 'evil-next-buffer))
 
-(setq evil-normal-state-cursor '(box "#c4a7e7")
-      evil-insert-state-cursor '(bar "#c4a7e7")
-      evil-visual-state-cursor '(hollow "#c4a7e7"))
+;; (setq evil-normal-state-cursor '(box "#c4a7e7")
+;;       evil-insert-state-cursor '(bar "#c4a7e7")
+;;       evil-visual-state-cursor '(hollow "#c4a7e7"))
 
 ;; (straight-use-package 'evil-collection)
 ;; (use-package evil-collection
@@ -215,3 +202,13 @@
 ;;   (setq evil-collection-magit-use-z-for-folds nil)
 ;;   :config
 ;;   (evil-collection-init))
+
+;; Other
+
+(use-package beacon
+  :straight t
+  :ensure t
+  :custom
+  (beacon-blink-when-point-moves-vertically 10)
+  :init
+  (beacon-mode 1))
